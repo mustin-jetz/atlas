@@ -48,6 +48,27 @@ export interface JournalEntry {
   updatedAt: string
 }
 
+export type ProjectStatus = 'active' | 'on_hold' | 'done'
+
+export interface ProjectUpdate {
+  id: string
+  date: string
+  body: string
+  createdAt: string
+}
+
+/** Multi-week work streams with a running status log */
+export interface Project {
+  id: string
+  title: string
+  description: string
+  status: ProjectStatus
+  targetDate: string | null
+  updates: ProjectUpdate[]
+  createdAt: string
+  updatedAt: string
+}
+
 export interface AtlasData {
   version: 1
   settings: Settings
@@ -55,6 +76,7 @@ export interface AtlasData {
   milestones: Milestone[]
   tasks: Task[]
   journal: JournalEntry[]
+  projects: Project[]
   /** Manually curated task IDs for Today focus */
   todayFocusIds: string[]
 }
@@ -77,6 +99,16 @@ export function createEmptyData(pinHash: string): AtlasData {
     milestones: [],
     tasks: [],
     journal: [],
+    projects: [],
     todayFocusIds: [],
   }
 }
+
+/** Backfill fields added after first local installs. */
+export function normalizeData(data: AtlasData): AtlasData {
+  return {
+    ...data,
+    projects: data.projects ?? [],
+  }
+}
+
