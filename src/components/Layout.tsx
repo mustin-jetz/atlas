@@ -4,6 +4,7 @@ import { daysUntil, formatDisplayDate } from '../lib/fiscal'
 
 const links = [
   { to: '/', label: 'Objectives', end: true },
+  { to: '/projects', label: 'Projects' },
   { to: '/today', label: 'Today' },
   { to: '/tasks', label: 'Tasks' },
   { to: '/journal', label: 'Journal' },

@@ -111,4 +111,3 @@ export function normalizeData(data: AtlasData): AtlasData {
     projects: data.projects ?? [],
   }
 }
-
