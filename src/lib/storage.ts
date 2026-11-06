@@ -3,6 +3,7 @@ import {
   SESSION_KEY,
   type AtlasData,
   createEmptyData,
+  normalizeData,
 } from '../types'
 
 export function loadData(): AtlasData | null {
@@ -11,7 +12,7 @@ export function loadData(): AtlasData | null {
     if (!raw) return null
     const parsed = JSON.parse(raw) as AtlasData
     if (parsed.version !== 1) return null
-    return parsed
+    return normalizeData(parsed)
   } catch {
     return null
   }
@@ -50,7 +51,7 @@ export function importJson(raw: string): AtlasData {
   if (parsed.version !== 1 || !parsed.settings?.pinHash) {
     throw new Error('Invalid Atlas backup file')
   }
-  return parsed
+  return normalizeData(parsed)
 }
 
 export function exportCsv(data: AtlasData): string {
@@ -83,5 +84,18 @@ export function exportCsv(data: AtlasData): string {
       ['journal', j.id, esc(j.title), '', j.date, esc(j.body.slice(0, 200))].join(','),
     )
   }
+  for (const p of data.projects ?? []) {
+    lines.push(
+      [
+        'project',
+        p.id,
+        esc(p.title),
+        p.status,
+        p.targetDate ?? '',
+        esc(p.description),
+      ].join(','),
+    )
+  }
   return lines.join('\n')
 }
+
