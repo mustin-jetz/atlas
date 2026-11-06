@@ -1,7 +1,7 @@
-import type { AtlasData, Goal, JournalEntry, Milestone, Task } from '../types'
+import type { AtlasData, Goal, JournalEntry, Milestone, Project, Task } from '../types'
 
 export interface SearchHit {
-  kind: 'goal' | 'milestone' | 'task' | 'journal'
+  kind: 'goal' | 'milestone' | 'task' | 'journal' | 'project'
   id: string
   title: string
   snippet: string
@@ -69,6 +69,18 @@ export function searchAll(data: AtlasData, query: string): SearchHit[] {
         id: j.id,
         title: j.title,
         snippet: snippet(j.body || j.title, q),
+      })
+    }
+  }
+
+  for (const p of (data.projects ?? []) as Project[]) {
+    const updateText = p.updates.map((u) => u.body).join(' ')
+    if (matches(q, p.title, p.description, updateText)) {
+      hits.push({
+        kind: 'project',
+        id: p.id,
+        title: p.title,
+        snippet: snippet(p.description || updateText || p.title, q),
       })
     }
   }
