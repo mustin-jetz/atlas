@@ -464,10 +464,29 @@ button {
 
 .milestone-head {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
   margin-bottom: 0.75rem;
+}
+
+.milestone-head h2 {
+  margin: 0;
+}
+
+.milestone-head .muted {
+  margin: 0;
+}
+
+.milestone-actions {
+  margin-top: 0.15rem;
+  align-items: center;
+}
+
+.milestone-actions .pill-btn {
+  flex: 0 0 auto;
+  align-self: center;
+  height: auto;
 }
 
 .task-mini-list,
@@ -774,6 +793,116 @@ button {
 .hint {
   font-size: 0.9rem;
   margin: 0 0 1rem;
+}
+
+/* Projects */
+.project-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.15rem;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 0.85rem;
+}
+
+.project-card-top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.project-card-top h2 {
+  margin: 0.25rem 0 0;
+  font-size: 1.35rem;
+}
+
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid var(--line);
+  background: #f2f7f6;
+}
+
+.status-pill.status-active {
+  background: #e5f4f2;
+  border-color: #9ecfc9;
+  color: var(--teal);
+}
+
+.status-pill.status-on_hold {
+  background: #f7f1e6;
+  border-color: #e0cba3;
+  color: #7a5b2e;
+}
+
+.status-pill.status-done {
+  background: #eef0f2;
+  border-color: #c9ced1;
+  color: #5a6d70;
+}
+
+.latest-update {
+  background: #f2f7f6;
+  border-radius: 10px;
+  padding: 0.75rem 0.85rem;
+}
+
+.latest-update .eyebrow {
+  margin-bottom: 0.2rem;
+}
+
+.latest-update p {
+  margin: 0;
+}
+
+.update-history summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--teal);
+}
+
+.update-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.update-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: flex-start;
+  border-top: 1px solid var(--line);
+  padding-top: 0.65rem;
+}
+
+.update-list time {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.update-list p {
+  margin: 0.2rem 0 0;
 }
 
 @media (max-width: 720px) {
