@@ -24,6 +24,8 @@ import type {
   Goal,
   JournalEntry,
   Milestone,
+  Project,
+  ProjectStatus,
   Score,
   Task,
   TaskStatus,
@@ -79,6 +81,20 @@ interface AtlasContextValue {
     patch: Partial<Pick<JournalEntry, 'title' | 'body' | 'date' | 'taskIds'>>,
   ) => void
   deleteJournal: (id: string) => void
+  // Projects
+  addProject: (input: {
+    title: string
+    description?: string
+    status?: ProjectStatus
+    targetDate?: string | null
+  }) => void
+  updateProject: (
+    id: string,
+    patch: Partial<Pick<Project, 'title' | 'description' | 'status' | 'targetDate'>>,
+  ) => void
+  deleteProject: (id: string) => void
+  addProjectUpdate: (projectId: string, body: string, date?: string) => void
+  deleteProjectUpdate: (projectId: string, updateId: string) => void
   // Today focus
   setTodayFocus: (taskIds: string[]) => void
   toggleTodayFocus: (taskId: string) => void
@@ -363,6 +379,104 @@ export function AtlasProvider({ children }: { children: ReactNode }) {
     [mutate],
   )
 
+  const addProject = useCallback(
+    (input: {
+      title: string
+      description?: string
+      status?: ProjectStatus
+      targetDate?: string | null
+    }) => {
+      const now = new Date().toISOString()
+      mutate((prev) => ({
+        ...prev,
+        projects: [
+          {
+            id: createId('proj'),
+            title: input.title.trim(),
+            description: input.description?.trim() ?? '',
+            status: input.status ?? 'active',
+            targetDate: input.targetDate ?? null,
+            updates: [],
+            createdAt: now,
+            updatedAt: now,
+          },
+          ...(prev.projects ?? []),
+        ],
+      }))
+    },
+    [mutate],
+  )
+
+  const updateProject = useCallback(
+    (
+      id: string,
+      patch: Partial<Pick<Project, 'title' | 'description' | 'status' | 'targetDate'>>,
+    ) => {
+      mutate((prev) => ({
+        ...prev,
+        projects: (prev.projects ?? []).map((p) =>
+          p.id === id ? { ...p, ...patch, updatedAt: new Date().toISOString() } : p,
+        ),
+      }))
+    },
+    [mutate],
+  )
+
+  const deleteProject = useCallback(
+    (id: string) => {
+      mutate((prev) => ({
+        ...prev,
+        projects: (prev.projects ?? []).filter((p) => p.id !== id),
+      }))
+    },
+    [mutate],
+  )
+
+  const addProjectUpdate = useCallback(
+    (projectId: string, body: string, date?: string) => {
+      const now = new Date().toISOString()
+      mutate((prev) => ({
+        ...prev,
+        projects: (prev.projects ?? []).map((p) =>
+          p.id === projectId
+            ? {
+                ...p,
+                updatedAt: now,
+                updates: [
+                  {
+                    id: createId('pupd'),
+                    date: date ?? todayISO(),
+                    body: body.trim(),
+                    createdAt: now,
+                  },
+                  ...p.updates,
+                ],
+              }
+            : p,
+        ),
+      }))
+    },
+    [mutate],
+  )
+
+  const deleteProjectUpdate = useCallback(
+    (projectId: string, updateId: string) => {
+      mutate((prev) => ({
+        ...prev,
+        projects: (prev.projects ?? []).map((p) =>
+          p.id === projectId
+            ? {
+                ...p,
+                updatedAt: new Date().toISOString(),
+                updates: p.updates.filter((u) => u.id !== updateId),
+              }
+            : p,
+        ),
+      }))
+    },
+    [mutate],
+  )
+
   const setTodayFocus = useCallback(
     (taskIds: string[]) => {
       mutate((prev) => ({ ...prev, todayFocusIds: taskIds }))
@@ -463,6 +577,11 @@ export function AtlasProvider({ children }: { children: ReactNode }) {
       addJournal,
       updateJournal,
       deleteJournal,
+      addProject,
+      updateProject,
+      deleteProject,
+      addProjectUpdate,
+      deleteProjectUpdate,
       setTodayFocus,
       toggleTodayFocus,
       updateFy,
@@ -491,6 +610,11 @@ export function AtlasProvider({ children }: { children: ReactNode }) {
       addJournal,
       updateJournal,
       deleteJournal,
+      addProject,
+      updateProject,
+      deleteProject,
+      addProjectUpdate,
+      deleteProjectUpdate,
       setTodayFocus,
       toggleTodayFocus,
       updateFy,
