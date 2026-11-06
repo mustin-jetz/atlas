@@ -14,6 +14,7 @@ export function GoalDetailPage() {
     updateGoal,
     deleteGoal,
     addMilestone,
+    updateMilestone,
     deleteMilestone,
     addTask,
     linkTaskToMilestone,
@@ -23,6 +24,7 @@ export function GoalDetailPage() {
 
   const [editOpen, setEditOpen] = useState(false)
   const [msOpen, setMsOpen] = useState(false)
+  const [editMsId, setEditMsId] = useState<string | null>(null)
   const [linkOpen, setLinkOpen] = useState<string | null>(null)
   const [newTaskOpen, setNewTaskOpen] = useState<string | null>(null)
   const [title, setTitle] = useState('')
@@ -72,6 +74,26 @@ export function GoalDetailPage() {
     setMsOpen(false)
   }
 
+  function openEditMilestone(id: string) {
+    const ms = data!.milestones.find((m) => m.id === id)
+    if (!ms) return
+    setEditMsId(id)
+    setMsTitle(ms.title)
+    setMsDesc(ms.description)
+  }
+
+  function saveMilestone(e: FormEvent) {
+    e.preventDefault()
+    if (!editMsId || !msTitle.trim()) return
+    updateMilestone(editMsId, {
+      title: msTitle.trim(),
+      description: msDesc.trim(),
+    })
+    setEditMsId(null)
+    setMsTitle('')
+    setMsDesc('')
+  }
+
   function createLinkedTask(e: FormEvent) {
     e.preventDefault()
     if (!newTaskOpen || !taskTitle.trim()) return
@@ -100,7 +122,16 @@ export function GoalDetailPage() {
           <button type="button" className="ghost-btn" onClick={openEdit}>
             Edit
           </button>
-          <button type="button" className="primary-btn" onClick={() => setMsOpen(true)}>
+          <button
+            type="button"
+            className="primary-btn"
+            onClick={() => {
+              setMsTitle('')
+              setMsDesc('')
+              setEditMsId(null)
+              setMsOpen(true)
+            }}
+          >
             Add milestone
           </button>
         </div>
@@ -126,21 +157,28 @@ export function GoalDetailPage() {
                   <div className="btn-row">
                     <button
                       type="button"
-                      className="ghost-btn"
+                      className="pill-btn"
+                      onClick={() => openEditMilestone(ms.id)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      className="pill-btn"
                       onClick={() => setNewTaskOpen(ms.id)}
                     >
                       New task
                     </button>
                     <button
                       type="button"
-                      className="ghost-btn"
+                      className="pill-btn"
                       onClick={() => setLinkOpen(ms.id)}
                     >
                       Link task
                     </button>
                     <button
                       type="button"
-                      className="danger-btn"
+                      className="pill-btn danger"
                       onClick={() => {
                         if (confirm('Delete this milestone?')) deleteMilestone(ms.id)
                       }}
@@ -220,8 +258,45 @@ export function GoalDetailPage() {
       )}
 
       {msOpen && (
-        <Modal title="New milestone" onClose={() => setMsOpen(false)}>
+        <Modal
+          title="New milestone"
+          onClose={() => {
+            setMsOpen(false)
+            setMsTitle('')
+            setMsDesc('')
+          }}
+        >
           <form className="stack-form" onSubmit={createMilestone}>
+            <label>
+              Title
+              <input
+                value={msTitle}
+                onChange={(e) => setMsTitle(e.target.value)}
+                required
+                autoFocus
+              />
+            </label>
+            <label>
+              Description
+              <textarea value={msDesc} onChange={(e) => setMsDesc(e.target.value)} rows={3} />
+            </label>
+            <button type="submit" className="primary-btn">
+              Save milestone
+            </button>
+          </form>
+        </Modal>
+      )}
+
+      {editMsId && (
+        <Modal
+          title="Edit milestone"
+          onClose={() => {
+            setEditMsId(null)
+            setMsTitle('')
+            setMsDesc('')
+          }}
+        >
+          <form className="stack-form" onSubmit={saveMilestone}>
             <label>
               Title
               <input
@@ -311,3 +386,4 @@ export function GoalDetailPage() {
     </div>
   )
 }
+
