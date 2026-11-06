@@ -272,6 +272,38 @@ button {
   color: var(--danger);
 }
 
+/* Shared compact action pills (milestone toolbar, etc.) */
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.1rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pill-btn:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.pill-btn.danger {
+  color: var(--danger);
+}
+
+.pill-btn.danger:hover {
+  border-color: #e7bcbc;
+  color: var(--danger);
+  background: #fff8f8;
+}
+
 .text-btn {
   background: none;
   border: none;
