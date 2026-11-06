@@ -150,11 +150,9 @@ export function GoalDetailPage() {
             return (
               <section key={ms.id} className="milestone-block">
                 <div className="milestone-head">
-                  <div>
-                    <h2>{ms.title}</h2>
-                    {ms.description && <p className="muted">{ms.description}</p>}
-                  </div>
-                  <div className="btn-row">
+                  <h2>{ms.title}</h2>
+                  {ms.description && <p className="muted">{ms.description}</p>}
+                  <div className="btn-row milestone-actions">
                     <button
                       type="button"
                       className="pill-btn"
@@ -386,4 +384,3 @@ export function GoalDetailPage() {
     </div>
   )
 }
-
